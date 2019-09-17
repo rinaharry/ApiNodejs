@@ -22,7 +22,7 @@ loginRoute.post('/login', async (req,res, next) => {
                    status: 400
                 })
             } else {
-             const token = jwt.sign({userId: loggin._id ,maricule: user.matricule},'okokok',{ expiresIn: '11h' });
+             const token = jwt.sign({userId: loggin._id ,email: loggin.email},'okokok',{ expiresIn: '11h' });
                  res.status(200).send({
                      token:token,
                      userId: loggin._id,
