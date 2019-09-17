@@ -1,16 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser')
-const app = express();
 const route = require('./route/index')
 const errorServer = require('./route/errorServer')
 const errorNotFound = require('./route/errorNotFound')
 const dbconnect = require('./configs/mongoose.connect')
 const environement = require('./configs/environement')
 //const server = require ('./configs/server.config')
+const app = express();
 
 
 dbconnect(()=>{
-
 app.all('/*', (req, res, next)=> {
     res.header("Access-Control-Allow-Origin", "*"); 
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
@@ -22,11 +21,10 @@ app.all('/*', (req, res, next)=> {
         next();
     }
 });
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false }));
 app.use('/',route);
-app.use(errorNotFound.get404);
+app.use(errorNotFound);
 app.use(errorServer)
 
 app.listen(environement.port,() => {

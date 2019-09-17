@@ -5,11 +5,13 @@ const auth = require('../midlware/authConfig')
 
 const routeUser = express.Router()
 
-
-routeUser.get('/',[auth],  async(req, res)=>{
+routeUser.get('/', async(req, res)=>{
 
   try {
-    const users = await User.find()
+    const users = await User
+         .find()
+         .select('-password')
+
    if(users) {
        res.status(200).send({
            data: users,
@@ -32,19 +34,21 @@ routeUser.get('/',[auth],  async(req, res)=>{
 })
 
 routeUser.post('/', async(req, res) => {
-  //console.log(req.headers)
 
-    try{
+  //console.log(req.headers)
+    try {
         let user = req.body;
-          user.password ="rakoto"
         bcryptpass = await bcrypt.hash(user.password, 10)
         user.password = bcryptpass
         user = new User({
             status:true,
             ... user
         })
-        const newuser = await user.save()
-        if(newuser){
+        const newuser = await user
+                         .save()
+            
+        if(newuser) {
+            newuser.password = null
             res.status(200).send({
                 data: newuser,
                 status: 200,
@@ -76,7 +80,7 @@ routeUser.put('/:id', async (req, res) => {
             Object.assign(user, req.body)
             const userUpdate = await user.save()      
             res.status(200).send({
-                data:userUpdate 
+            data:userUpdate 
          })
     }
   } catch(err) {
@@ -99,13 +103,13 @@ routeUser.delete('/:id', async (req, res) => {
                 data: "user not found",
                 status: 400
             })
-        }else{
+        } else {
             res.status(200).send({
                 data: user,
                 status: 200,
                 message: "user delete"
             }) 
-        }}else{
+        }} else {
             res.status(400).send({
                 data: "user not found",
                 status: 400
