@@ -33,6 +33,29 @@ routeUser.get('/', async(req, res)=>{
   }
 })
 
+routeUser.put('/:id/activedesactive', async(req, res)=>{
+    try {
+        let  user = await User.findOne({_id: req.params.id})
+             if (!user) {
+                 res.status(400).send({
+                     message: "user not found "
+                 })
+             } else {
+                user.status = !req.body.status
+               // console.log(user)
+                const userUpdate = await user.save()      
+                res.status(200).send({
+                data:userUpdate 
+             })
+        }
+      } catch(err) {
+          res.status(400).send(
+              {
+                 message: err
+              }
+          )
+      }
+})
 routeUser.post('/', async(req, res) => {
 
   //console.log(req.headers)
@@ -41,7 +64,6 @@ routeUser.post('/', async(req, res) => {
         bcryptpass = await bcrypt.hash(user.password, 10)
         user.password = bcryptpass
         user = new User({
-            status:true,
             ... user
         })
         const newuser = await user

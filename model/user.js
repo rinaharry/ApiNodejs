@@ -26,7 +26,8 @@ const mongoose = require('mongoose')
     },
     status:{
         type : Boolean,
-        required: true
+        required: true,
+        default:true
     },
     email: {
         type: String,
